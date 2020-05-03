@@ -8,10 +8,15 @@ jobs:
     runs-on: ubuntu-latest
     env:
       TF_version: latest
-      TF_working_dir: './terraform/'
+      TF_working_dir: "./terraform/"
+      TF_VAR_BACKEND_digitalocean_spaces_bucket: ${{ secrets.DIGITALOCEAN_SPACES_BUCKET }}
+      TF_VAR_BACKEND_digitalocean_spaces_access_key: ${{ secrets.DIGITALOCEAN_SPACES_ACCESS_KEY }}
+      TF_VAR_BACKEND_digitalocean_spaces_secret_key: ${{ secrets.DIGITALOCEAN_SPACES_SECRET_KEY }}
       TF_VAR_digitalocean_api_token: ${{ secrets.DIGITALOCEAN_API_TOKEN }}
       TF_VAR_digitalocean_public_ssh_key_name: ${{ secrets.DIGITALOCEAN_PUBLIC_SSH_KEY_NAME }}
     steps:
+      - name: env TF_VAR_BACKEND_digitalocean_spaces_key
+        run: echo ::set-env name=TF_VAR_BACKEND_digitalocean_spaces_key::${GITHUB_REPOSITORY#*/}/${GITHUB_REF#refs/heads/}/terraform.tfstate
       - name: env TF_VAR_digitalocean_instance_name
         run: echo ::set-env name=TF_VAR_digitalocean_instance_name::${GITHUB_REPOSITORY#*/}-${GITHUB_SHA:0:7}
       - name: checkout
@@ -28,6 +33,11 @@ jobs:
           tf_actions_version: ${{ env.TF_version }}
           tf_actions_working_dir: ${{ env.TF_working_dir }}
           tf_actions_subcommand: init
+          args:
+            -backend-config="key=${{ env.TF_VAR_BACKEND_digitalocean_spaces_key }}"
+            -backend-config="bucket=${{ env.TF_VAR_BACKEND_digitalocean_spaces_bucket }}"
+            -backend-config="access_key=${{ env.TF_VAR_BACKEND_digitalocean_spaces_access_key }}"
+            -backend-config="secret_key=${{ env.TF_VAR_BACKEND_digitalocean_spaces_secret_key }}"
       - name: terraform validate
         uses: hashicorp/terraform-github-actions@master
         with:
