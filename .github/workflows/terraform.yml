@@ -4,7 +4,7 @@ on:
     branches:
       - master
 jobs:
-  terraform:
+  apply:
     runs-on: ubuntu-latest
     env:
       TF_version: latest
@@ -14,20 +14,21 @@ jobs:
       TF_VAR_BACKEND_digitalocean_spaces_secret_key: ${{ secrets.DIGITALOCEAN_SPACES_SECRET_KEY }}
       TF_VAR_digitalocean_api_token: ${{ secrets.DIGITALOCEAN_API_TOKEN }}
       TF_VAR_digitalocean_public_ssh_key_name: ${{ secrets.DIGITALOCEAN_PUBLIC_SSH_KEY_NAME }}
+      TF_VAR_digitalocean_domain_name: ${{ secrets.DIGITALOCEAN_DOMAIN_NAME }}
     steps:
-      - name: env TF_VAR_BACKEND_digitalocean_spaces_key
+      - name: Set environment variable TF_VAR_BACKEND_digitalocean_spaces_key
         run: echo ::set-env name=TF_VAR_BACKEND_digitalocean_spaces_key::${GITHUB_REPOSITORY#*/}/${GITHUB_REF#refs/heads/}/terraform.tfstate
-      - name: env TF_VAR_digitalocean_instance_name
+      - name: Set environment variable TF_VAR_BACKEND_digitalocean_instance_name
         run: echo ::set-env name=TF_VAR_digitalocean_instance_name::${GITHUB_REPOSITORY#*/}-${GITHUB_SHA:0:7}
-      - name: checkout
+      - name: Checkout
         uses: actions/checkout@master
-      - name: terraform fmt
+      - name: Terraform format
         uses: hashicorp/terraform-github-actions@master
         with:
           tf_actions_version: ${{ env.TF_version }}
           tf_actions_working_dir: ${{ env.TF_working_dir }}
           tf_actions_subcommand: fmt
-      - name: terraform init
+      - name: Terraform init
         uses: hashicorp/terraform-github-actions@master
         with:
           tf_actions_version: ${{ env.TF_version }}
@@ -38,15 +39,25 @@ jobs:
             -backend-config="bucket=${{ env.TF_VAR_BACKEND_digitalocean_spaces_bucket }}"
             -backend-config="access_key=${{ env.TF_VAR_BACKEND_digitalocean_spaces_access_key }}"
             -backend-config="secret_key=${{ env.TF_VAR_BACKEND_digitalocean_spaces_secret_key }}"
-      - name: terraform validate
+      - name: Terraform validate
         uses: hashicorp/terraform-github-actions@master
         with:
           tf_actions_version: ${{ env.TF_version }}
           tf_actions_working_dir: ${{ env.TF_working_dir }}
           tf_actions_subcommand: validate
-      - name: terraform plan
+      - name: Terraform plan
         uses: hashicorp/terraform-github-actions@master
         with:
           tf_actions_version: ${{ env.TF_version }}
           tf_actions_working_dir: ${{ env.TF_working_dir }}
           tf_actions_subcommand: plan
+          args:
+            -out ".tfplan"
+      - name: Terraform apply
+        uses: hashicorp/terraform-github-actions@master
+        with:
+          tf_actions_version: ${{ env.TF_version }}
+          tf_actions_working_dir: ${{ env.TF_working_dir }}
+          tf_actions_subcommand: apply
+          args:
+            ".tfplan"

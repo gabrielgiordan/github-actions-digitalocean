@@ -14,3 +14,15 @@ resource "digitalocean_droplet" "app_instance" {
   ipv6     = true
   ssh_keys = [data.digitalocean_ssh_key.app_ssh_key.id]
 }
+
+resource "digitalocean_domain" "app_domain" {
+  name       = var.digitalocean_domain_name
+  ip_address = digitalocean_droplet.app_instance.ipv4_address
+}
+
+resource "digitalocean_record" "app_record_cname" {
+  domain = digitalocean_domain.app_domain.name
+  type   = "CNAME"
+  name   = "www"
+  value  = "@"
+}

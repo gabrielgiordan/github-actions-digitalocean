@@ -1,7 +1,7 @@
 ![terraform](https://github.com/gabrielgiordan/github-actions-digitalocean/workflows/terraform/badge.svg)
 # GitHub Actions DigitalOcean
 
-GitHub actions workflows for DigitalOcean droplets, using DigitalOcean Spaces as the Terraform backend for `.tfstate` storage.
+GitHub actions workflows for DigitalOcean droplets, using DigitalOcean Spaces as the Terraform backend for `.tfstate` storage and domain name via DigitalOcean DNS.
 
 ## Prerequisites
 
@@ -16,6 +16,7 @@ In order to use Terraform at a local machine, you must create a `./terraform/ter
 digitalocean_instance_name       = "app"                // The DigitalOcean droplet name
 digitalocean_api_token           = "15d37a5"            // The DigitalOcean API token
 digitalocean_public_ssh_key_name = "app_ssh_public_key" // The DigitalOcean public SSH key name
+digitalocean_domain_name         = "app.com"            // The DigitalOcean droplet domain
 ```
 
 Also the `./terraform/backend.tfvars` for the backend configuration with DigitalOcean Spaces as the provider:
@@ -43,6 +44,15 @@ How do I import an existing DigitalOcean droplet?
 > Then import it into your Terraform state:
 >
 > `terraform import digitalocean_droplet.app_instance droplet_id`
+
+How do I import an existing DigitalOcean domain?
+> Retrieve your DigitalOcean domains and copy the one you wish to import:
+>
+> `doctl compute domain list`
+>
+> Then import it into your Terraform state:
+>
+> `terraform import digitalocean_domain.app_domain domain`
 
 How do I support `hcl2` for Terraform >= 0.12?
 > In order to support the Terraform version 0.12 at or greater with `hcl2` syntax support, install the [Terraform Language Server](https://github.com/mauve/vscode-terraform/issues/157#issuecomment-605020900)
