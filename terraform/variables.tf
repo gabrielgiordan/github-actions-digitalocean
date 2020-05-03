@@ -12,3 +12,8 @@ variable "digitalocean_instance_name" {
   type        = string
   description = "The DigitalOcean instance name"
 }
+
+variable "digitalocean_domain_name" {
+  type        = string
+  description = "The DigitalOcean instance domain name"
+}

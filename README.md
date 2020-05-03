@@ -16,6 +16,7 @@ In order to use Terraform at a local machine, you must create a `./terraform/ter
 digitalocean_instance_name       = "app"                // The DigitalOcean droplet name
 digitalocean_api_token           = "15d37a5"            // The DigitalOcean API token
 digitalocean_public_ssh_key_name = "app_ssh_public_key" // The DigitalOcean public SSH key name
+digitalocean_domain_name         = "app.com"            // The DigitalOcean droplet domain
 ```
 
 Also the `./terraform/backend.tfvars` for the backend configuration with DigitalOcean Spaces as the provider:
