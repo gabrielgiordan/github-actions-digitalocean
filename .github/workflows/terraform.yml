@@ -4,7 +4,7 @@ on:
     branches:
       - master
 jobs:
-  plan:
+  apply:
     runs-on: ubuntu-latest
     env:
       TF_version: latest
@@ -51,3 +51,13 @@ jobs:
           tf_actions_version: ${{ env.TF_version }}
           tf_actions_working_dir: ${{ env.TF_working_dir }}
           tf_actions_subcommand: plan
+          args:
+            -out ".tfplan"
+      - name: Terraform apply
+        uses: hashicorp/terraform-github-actions@master
+        with:
+          tf_actions_version: ${{ env.TF_version }}
+          tf_actions_working_dir: ${{ env.TF_working_dir }}
+          tf_actions_subcommand: apply
+          args:
+            ".tfplan"
