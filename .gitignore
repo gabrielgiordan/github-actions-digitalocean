@@ -34,3 +34,6 @@ terraform.rc
 
 # Ignore .tfvars
 *.tfvars
+
+# Ignore .pkrvars.hcl
+*.pkrvars.hcl

@@ -6,9 +6,21 @@ GitHub actions workflows for DigitalOcean droplets, using DigitalOcean Spaces as
 ## Prerequisites
 
 - [terraform >= 0.12](https://learn.hashicorp.com/terraform/getting-started/install.html)
+- [packer >= 1.5.6](https://www.packer.io/intro/getting-started/)
 - [doctl](https://www.digitalocean.com/docs/apis-clis/doctl/how-to/install/)
 
 ## Usage
+
+### Packer
+
+Packer at this project uses HCL2 syntax.
+
+To run Packer at your local machine, create a file named `variables.pkvars.hcl` at the `packer` folder in order to store your variables.
+
+Then you can build your snapshot at packer folder:
+`packer build -var-file=variables.pkrvars.hcl .`
+
+### Terraform
 
 In order to use Terraform at a local machine, you must create a `./terraform/terraform.tfvars` file with the following Terraform variables:
 
