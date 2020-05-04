@@ -1,4 +1,4 @@
-![terraform](https://github.com/gabrielgiordan/github-actions-digitalocean/workflows/terraform/badge.svg)
+![deploy](https://github.com/gabrielgiordan/github-actions-digitalocean/workflows/deploy/badge.svg)
 # GitHub Actions DigitalOcean
 
 GitHub actions workflows for DigitalOcean droplets, using DigitalOcean Spaces as the Terraform backend for `.tfstate` storage and domain name via DigitalOcean DNS.
