@@ -1,7 +1,7 @@
-![terraform](https://github.com/gabrielgiordan/github-actions-digitalocean/workflows/terraform/badge.svg)
+![deploy](https://github.com/gabrielgiordan/github-actions-digitalocean/workflows/deploy/badge.svg)
 # GitHub Actions DigitalOcean
 
-GitHub actions workflows for DigitalOcean droplets, using DigitalOcean Spaces as the Terraform backend for `.tfstate` storage and domain name via DigitalOcean DNS.
+GitHub actions workflows for DigitalOcean droplets, using DigitalOcean Spaces as the Terraform backend for `.tfstate` storage, domain name via DigitalOcean DNS and DigitalOcean Images for the snapshot image creation.
 
 ## Prerequisites
 
@@ -15,30 +15,17 @@ GitHub actions workflows for DigitalOcean droplets, using DigitalOcean Spaces as
 
 Packer at this project uses HCL2 syntax.
 
-To run Packer at your local machine, create a file named `variables.pkvars.hcl` at the `packer` folder in order to store your variables.
+To run Packer at your local machine, create a file named `variables.pkvars.hcl` at the `packer` folder in order to store the Packer variables.
 
 Then you can build your snapshot at packer folder:
-`packer build -var-file=variables.pkrvars.hcl .`
+
+```bash
+packer build -var-file=variables.pkrvars.hcl .
+```
 
 ### Terraform
 
-In order to use Terraform at a local machine, you must create a `./terraform/terraform.tfvars` file with the following Terraform variables:
-
-```hcl
-digitalocean_instance_name       = "app"                // The DigitalOcean droplet name
-digitalocean_api_token           = "15d37a5"            // The DigitalOcean API token
-digitalocean_public_ssh_key_name = "app_ssh_public_key" // The DigitalOcean public SSH key name
-digitalocean_domain_name         = "app.com"            // The DigitalOcean droplet domain
-```
-
-Also the `./terraform/backend.tfvars` for the backend configuration with DigitalOcean Spaces as the provider:
-
-```hcl
-key        = "app/terraform.tfsate" // The Terraform state key for .tfstate
-bucket     = "nx02l"                // The DigitalOcean space subdomain name
-access_key = "23a71u8"              // The DigitalOcean Spaces access key
-secret_key = "85p32a1"              // The DigitalOcean Spaces secret key
-```
+In order to use Terraform at a local machine, you must create a `terraform.tfvars` file within the `terraform` directory. Also you will need a file named `backend.tfvars` for the backend configuration with DigitalOcean Spaces as the provider.
 
 Then you can init Terraform with:
 
@@ -71,3 +58,6 @@ How do I support `hcl2` for Terraform >= 0.12?
 
 Why using a separate file for backend variables on Terraform?
 > Because Terraform does not allow variables inside a backend scope as seen on [issue #13022](https://github.com/hashicorp/terraform/issues/13022)
+
+Why there is not a validate step at packer job?
+> Validation with Packer using HCL2 syntax is currently unsupported from Hashicorp

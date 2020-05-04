@@ -1,0 +1,5 @@
+digitalocean_instance_name       = "tf-instance"
+digitalocean_api_token           = ""
+digitalocean_public_ssh_key_name = "tf-ssh-key"
+digitalocean_domain_name         = ""
+digitalocean_image_name          = "pkr-snapshot"

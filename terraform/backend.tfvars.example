@@ -1,0 +1,4 @@
+bucket     = "tfstates-bucket"
+key        = "terraform.tfstate"
+access_key = ""
+secret_key = ""

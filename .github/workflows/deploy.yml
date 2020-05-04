@@ -1,10 +1,24 @@
-name: terraform
+name: deploy
 on:
   push:
     branches:
       - master
 jobs:
-  apply:
+  packer:
+    runs-on: ubuntu-latest
+    env:
+      PKR_VAR_digitalocean_api_token: ${{ secrets.DIGITALOCEAN_API_TOKEN }}
+    steps:
+      - name: Set environment variable PKR_VAR_digitalocean_snapshot_name
+        run: echo ::set-env name=PKR_VAR_digitalocean_snapshot_name::pkr-${GITHUB_REPOSITORY#*/}-${GITHUB_SHA:0:7}
+      - name: Checkout branch
+        uses: actions/checkout@master
+      - name: Packer build
+        uses: docker://hashicorp/packer:1.5.6
+        with:
+          args: build -on-error=abort ./packer
+  terraform:
+    needs: packer
     runs-on: ubuntu-latest
     env:
       TF_version: latest
@@ -20,7 +34,9 @@ jobs:
         run: echo ::set-env name=TF_VAR_BACKEND_digitalocean_spaces_key::${GITHUB_REPOSITORY#*/}/${GITHUB_REF#refs/heads/}/terraform.tfstate
       - name: Set environment variable TF_VAR_BACKEND_digitalocean_instance_name
         run: echo ::set-env name=TF_VAR_digitalocean_instance_name::${GITHUB_REPOSITORY#*/}-${GITHUB_SHA:0:7}
-      - name: Checkout
+      - name: Set environment variable TF_VAR_digitalocean_image_name
+        run: echo ::set-env name=TF_VAR_digitalocean_image_name::pkr-${GITHUB_REPOSITORY#*/}-${GITHUB_SHA:0:7}
+      - name: Checkout branch
         uses: actions/checkout@master
       - name: Terraform format
         uses: hashicorp/terraform-github-actions@master
@@ -52,7 +68,7 @@ jobs:
           tf_actions_working_dir: ${{ env.TF_working_dir }}
           tf_actions_subcommand: plan
           args:
-            -out ".tfplan"
+            -out "${GITHUB_SHA:0:7}.tfplan"
       - name: Terraform apply
         uses: hashicorp/terraform-github-actions@master
         with:
@@ -60,4 +76,4 @@ jobs:
           tf_actions_working_dir: ${{ env.TF_working_dir }}
           tf_actions_subcommand: apply
           args:
-            ".tfplan"
+            "${GITHUB_SHA:0:7}.tfplan"
