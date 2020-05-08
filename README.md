@@ -5,13 +5,31 @@ GitHub actions workflows for DigitalOcean droplets, using DigitalOcean Spaces as
 
 ## Prerequisites
 
-- [terraform >= 0.12](https://learn.hashicorp.com/terraform/getting-started/install.html)
+- [vagrant >= 2.2.8](https://www.vagrantup.com/docs/installation/)
+- [ansible >= 2.9.7](https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html)
 - [packer >= 1.5.6](https://www.packer.io/intro/getting-started/)
+- [terraform >= 0.12](https://learn.hashicorp.com/terraform/getting-started/install.html)
 - [doctl](https://www.digitalocean.com/docs/apis-clis/doctl/how-to/install/)
 
 ## Usage
 
+### Vagrant
+
+Vagrant is used to provision a VM locally using the VirtualBox to be used as the development environment. Start your VM with:
+
+```bash
+vagrant up
+```
+
+### Ansible
+
+Ansible is used to configure the environment and its entry point playbook `main.yml` is provisioned with Vagrant or Packer workflow.
+
+The default forwarded port on both environments is `8080`.
+
 ### Packer
+
+Packer is used to create the OS image once for time savings on provisioning into different environments.
 
 Packer at this project uses HCL2 syntax.
 
@@ -24,6 +42,8 @@ packer build -var-file=variables.pkrvars.hcl .
 ```
 
 ### Terraform
+
+Terraform is used to provision the infrastructure.
 
 In order to use Terraform at a local machine, you must create a `terraform.tfvars` file within the `terraform` directory. Also you will need a file named `backend.tfvars` for the backend configuration with DigitalOcean Spaces as the provider.
 

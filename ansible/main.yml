@@ -1,0 +1,35 @@
+---
+- hosts: default
+  remote_user: vagrant
+  become: true
+  become_user: root
+  tasks:
+    - name: APT remove useless packages from the cache
+      apt:
+        autoclean: true
+    - name: APT remove dependencies that are no longer required
+      apt:
+        autoremove: true
+    - name: APT add Nginx respository
+      apt_repository:
+        repo: deb https://nginx.org/packages/ubuntu/ focal nginx
+        state: present
+        update_cache: false
+    - name: APT add Nginx respository source
+      apt_repository:
+        repo: deb-src https://nginx.org/packages/ubuntu/ focal nginx
+        state: present
+        update_cache: false
+    - name: APT add Nginx GPG
+      apt_key:
+        url: http://nginx.org/keys/nginx_signing.key
+        state: present
+    - name: APT install Nginx
+      apt:
+        pkg: nginx
+        state: latest
+        update_cache: true
+    - name: Service start Nginx
+      service:
+        name: nginx
+        state: started

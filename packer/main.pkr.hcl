@@ -13,9 +13,8 @@ build {
     "source.digitalocean.app_snapshot"
   ]
 
-  provisioner "shell" {
-    inline = [
-      "sleep 5"
-    ]
+  provisioner "ansible" {
+    playbook_file = "ansible/main.yml"
+    keep_inventory_file = true
   }
 }
