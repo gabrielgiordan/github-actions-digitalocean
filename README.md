@@ -3,13 +3,15 @@
 
 GitHub actions workflows for DigitalOcean droplets, using DigitalOcean Spaces as the Terraform backend for `.tfstate` storage, domain name via DigitalOcean DNS and DigitalOcean Images for the snapshot image creation.
 
+![Architecture overview](doc/images/architecture.png?raw=true "Architecture verview")
+
 ## Prerequisites
 
 - [vagrant >= 2.2.8](https://www.vagrantup.com/docs/installation/)
 - [ansible >= 2.9.7](https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html)
 - [packer >= 1.5.6](https://www.packer.io/intro/getting-started/)
 - [terraform >= 0.12](https://learn.hashicorp.com/terraform/getting-started/install.html)
-- [doctl](https://www.digitalocean.com/docs/apis-clis/doctl/how-to/install/)
+- [doctl >= 1.43.0](https://www.digitalocean.com/docs/apis-clis/doctl/how-to/install/)
 
 ## Usage
 
